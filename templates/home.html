@@ -1,0 +1,15 @@
+<html lang="en">
+    <head>
+        <title>URL Shortener</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="wrapper">
+            <form action="/" method="post">
+                <input type="text"placeholder="Enter the long url" required name="item">
+                  <input type="text"placeholder="Enter the name of short url" name="item1" >
+                 <input type="submit" value="Shorten the URL">
+            </form>
+            <a href={{ url_for ('items1' ) }} target="_blank">Click here to open Example list of your items</a>
+    </body>
+</html>

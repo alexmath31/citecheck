@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <style>
+            table, th, td {
+                 border:1px solid black;
+            }
+        </style>
+        <title> Items: {{ links | length }} </title>
+    </head>
+
+    <body>
+     <p> Here is a list of your items:</p>
+        <table style="width:100%">
+            <tr>
+                <th>Link</th>
+                 <th>Short link</th>
+                 <th>Views</th>
+            </tr>
+            <ul>
+            {% for link in links %}
+               <tr>
+                <td> <a href="{{ link.url }}"> {{link.url}} </a></td>
+                <td>   <a href="{{ link.url }}"> {{link.hash_id}} </a></td>
+                <td>{{link.views}}</td>
+              </tr>
+            {% endfor %}
+        </ul>
+        </table>
+        <a href={{ url_for ('items_endpoint' ) }} target="_blank">Click here to open main page</a>
+    </body>
+</html>
