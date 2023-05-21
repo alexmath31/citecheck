@@ -1,14 +1,13 @@
 <html lang="en">
     <head>
-        <title>URL Shortener</title>
+        <title>Delete</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div class="wrapper">
             <form action="/" method="post">
-                <input type="text"placeholder="Enter the long url" required name="item">
-                  <input type="text"placeholder="Enter the name of short url" name="item1" >
-                 <input type="submit" value="Shorten the URL">
+                <input type="text"placeholder="Enter the short url" required name="item">
+                 <input type="submit" value="Delete url">
             </form>
             <a href={{ url_for ('items' ) }} target="_blank">Click here to open list of your items</a>
     </body>

@@ -15,13 +15,17 @@
                 <th>Link</th>
                  <th>Short link</th>
                  <th>Views</th>
+                <th>Time</th>
+                <th>Delete</th>
             </tr>
             <ul>
             {% for link in links %}
                <tr>
                 <td> <a href="{{ link.url }}"> {{link.url}} </a></td>
-                <td>   <a href="{{ link.url }}"> {{link.hash_id}} </a></td>
+                <td>   <a  href="{{ url_for('greed',hash_id=link.hash_id,_external=True) }}"}}"> {{link.hash_id}} </a></td>
                 <td>{{link.views}}</td>
+                   <td>{{link. created_at}}</td>
+                   <td> <a  href="{{ url_for('delete',hash_id=link.hash_id,_external=True) }}"}}"> Delete </a></td>
               </tr>
             {% endfor %}
         </ul>

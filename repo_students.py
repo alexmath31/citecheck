@@ -1,6 +1,7 @@
 import dataclasses
 import json
 import os
+import redis
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from datetime import datetime
@@ -37,6 +38,10 @@ class LinkRepository(ABC):
 
     @overload
     def get(self, hash_id: str) -> Link:
+        ...
+
+    @overload
+    def delete(self, hash_id: str):
         ...
 
     @abstractmethod
@@ -118,5 +123,50 @@ class FileSystemLinkRepository(LinkRepository):
             json.dump(link.to_dict(), fp=f)
         return link
 
+    def delete(self, hash_id):
+        file_path = os.path.join(self.path, f"{hash_id}.txt")
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return True
+        else:
+            return False
 
-repository = FileSystemLinkRepository(os.getcwd())
+
+class RedisLinkRepository(LinkRepository):
+    def __init__(self, host: str = "localhost", port: int = 6379, db: int = 0):
+        self.redis = redis.Redis(host=host, port=port, db=db)
+
+    def create(self, link: Link) -> Link:
+        self.redis.set(link.hash_id, json.dumps(link.to_dict()))
+        return link
+
+    def get(self, hash_id: Optional[str] = None) -> Union[Link, List[Link]]:
+        if hash_id is not None:
+            return self._read_single_link(hash_id)
+        else:
+            links = []
+            keys = self.redis.keys()
+            for key in keys:
+                hash_id = key.decode()
+                link = self._read_single_link(hash_id)
+                links.append(link)
+            return links
+
+    def _read_single_link(self, hash_id):
+        link_json = self.redis.get(hash_id)
+        if link_json:
+            link_dict = json.loads(link_json.decode())
+            link = Link.from_dict(link_dict)
+            return link
+        return None
+
+    def update(self, link, add_views: int = 1):
+        link.views += add_views
+        self.redis.set(link.hash_id, json.dumps(link.to_dict()))
+        return link
+
+    def delete(self, hash_id):
+        return self.redis.delete(hash_id)
+
+
+repository = RedisLinkRepository(os.getcwd())
